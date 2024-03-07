@@ -1,12 +1,8 @@
 from tkinter import *
 import pandas as pd
-
 import random
-import time
+
 BACKGROUND_COLOR = "#B1DDC6"
-
-
-
 # Read CSV data
 try:
     df = pd.read_csv("data/words_to_learn.csv")
@@ -14,6 +10,8 @@ except FileNotFoundError:
     df = pd.read_csv("data/french_words.csv")
 card_list = df.to_dict(orient="records")
 current_card = {}
+
+
 # Flips card to the answer.
 def next_card():
     # Flips the card and displays the answer.
@@ -22,6 +20,7 @@ def next_card():
     canvas.itemconfig(word_text, text=current_card["English"], fill="white")
 
 # Changes the card to the next main topic
+
 def change_card():
     global current_card, delay
     # Cancels any previous delay so overlap doesn't occur.
@@ -37,6 +36,7 @@ def change_card():
     delay = window.after(3000, next_card)
 
 
+# Save list of words needed to learn. Removes flashcards that are known.
 def save_word():
     card_list.remove(current_card)
     new_df = pd.DataFrame(card_list)
@@ -48,7 +48,6 @@ def save_word():
 window = Tk()
 window.title("Flashcards")
 window.config(padx=50, pady=50, bg=BACKGROUND_COLOR)
-
 delay = window.after(3000, next_card)
 
 # Canvas
@@ -56,6 +55,7 @@ canvas = Canvas(width=800, height=526, highlightthickness=0)
 front_flash = PhotoImage(file="images/card_front.png")
 back_flash = PhotoImage(file="images/card_back.png")
 card_background = canvas.create_image(400,263, image=front_flash)
+
 # Canvas text
 title_text = canvas.create_text(400, 150, text="", fill="black", font=("Ariel", 40, "italic"))
 word_text = canvas.create_text(400, 250, text="", fill="black", font=("Ariel", 40, "bold"))
