@@ -1,5 +1,6 @@
 from tkinter import *
 import pandas as pd
+
 import random
 import time
 BACKGROUND_COLOR = "#B1DDC6"
@@ -7,7 +8,10 @@ BACKGROUND_COLOR = "#B1DDC6"
 
 
 # Read CSV data
-df = pd.read_csv("data/french_words.csv")
+try:
+    df = pd.read_csv("data/words_to_learn.csv")
+except FileNotFoundError:
+    df = pd.read_csv("data/french_words.csv")
 card_list = df.to_dict(orient="records")
 current_card = {}
 # Flips card to the answer.
@@ -31,6 +35,13 @@ def change_card():
     canvas.itemconfig(card_background, image=front_flash)
     # Create a new delay for next card flip
     delay = window.after(3000, next_card)
+
+
+def save_word():
+    card_list.remove(current_card)
+    new_df = pd.DataFrame(card_list)
+    new_df.to_csv("data/words_to_learn.csv", index=False)
+    change_card()
 
 
 # UI Setup
@@ -58,10 +69,10 @@ wrong_btn = Button(image=wrong_pic, command=change_card)
 wrong_btn.grid(column=0, row=1)
 
 right_pic = PhotoImage(file="images/right.png")
-right_btn = Button(image=right_pic, command=change_card)
+right_btn = Button(image=right_pic, command=save_word)
 right_btn.grid(column=1, row=1)
 
-# Displays the first card on initially program run.
+# Displays the first card on initial program run.
 change_card()
 
 window.mainloop()
